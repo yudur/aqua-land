@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aqua Land - Simulação</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background: #f5f5f5;
+            padding: 1.25rem 2rem;
+        }
+
+        .logo {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #90E0EF;
+            text-decoration: none;
+        }
+
+        /* Área principal do jogo */
+        .game-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 2rem 1rem;
+            gap: 1.5rem;
+        }
+
+        /* Título do nível */
+        .nivel-status {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .nivel-status .label {
+            color: #111;
+        }
+
+        .nivel-status .critico {
+            color: #f2745e;
+        }
+
+        /* Container do reservatório */
+        .reservoir-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 2.25rem;
+        }
+
+        /* Barra de nível lateral */
+        .level-bar {
+            width: 48px;
+            height: 300px;
+            background: #f5f5f5;
+            border: 3px solid #0fa0a6;
+            border-radius: 14px;
+            position: relative;
+            overflow: visible;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+        }
+
+        /* Barra de temperatura estática (sempre 20%) */
+        .level-bar .heat-gradient{
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 20%;
+            background: linear-gradient(to top,
+                #E76F51 0%,
+                #F4A584 40%,
+                rgba(249, 220, 196, 0.6) 70%,
+                rgba(245, 245, 245, 0) 100%
+            );
+            border-radius: 0 0 11px 11px;
+            transition: height 0.5s ease, background 0.5s ease;
+        }
+
+        .level-percentage {
+            position: absolute;
+            bottom: -2.2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #E76F51;
+            white-space: nowrap;
+            transition: color 0.5s ease;
+        }
+
+        /* Reservatório */
+        .reservoir {
+            width: 720px;
+            height: 300px;
+            border: 3px solid #0e9da4;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+        }
+
+        .water {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 20%;
+            background: linear-gradient(
+                to bottom,
+                rgba(235, 250, 255, 0.2) 0%,
+                rgba(200, 235, 245, 0.4) 15%,
+                rgba(150, 215, 235, 0.65) 30%,
+                rgba(100, 200, 230, 0.8) 45%,
+                rgba(72, 202, 228, 0.9) 60%,
+                #48cae4 75%,
+                #1fa8c9 87%,
+                #0096c7 100%
+            );
+            background-size: 100% 200%;
+            animation: water-wave 3s ease-in-out infinite;
+            transition: height 0.5s ease;
+        }
+
+        @keyframes water-wave {
+            0%, 100% { background-position: 0% 0%; }
+            50% { background-position: 0% 100%; }
+        }
+
+        /* Seção de controles */
+        .controls-section {
+            background: #023e52;
+            width: 100%;
+            padding: 3.25rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 3.5rem;
+            margin-top: auto;
+        }
+
+        .btn-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.9rem;
+            width: 300px;
+            height: 72px;
+            padding: 0 1.5rem;
+            font-size: 1.15rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .btn-chover {
+            background: #BFEAF2;
+            color: #0b3a44;
+        }
+
+        .btn-chover:hover {
+            background: #A9DEEA;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 18px rgba(0,0,0,0.2);
+        }
+
+        .btn-evaporar {
+            background: #F1C75B;
+            color: #2f2f2f;
+        }
+
+        .btn-evaporar:hover {
+            background: #E9B93E;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 18px rgba(0,0,0,0.2);
+        }
+
+        .btn-reiniciar {
+            background: #5CC4AE;
+            color: #023e52;
+        }
+
+        .btn-reiniciar:hover {
+            background: #45B49D;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 18px rgba(0,0,0,0.2);
+        }
+
+        /* Ícones dos botões (PNG da pasta assets) */
+        .btn-img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+        }
+
+        /* Footer */
+        footer {
+            background: #e6c57a;
+            padding: 0.8rem 1rem;
+            text-align: center;
+            color: #90E0EF;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Responsivo */
+        @media (max-width: 900px) {
+            .reservoir {
+                width: 85vw;
+                max-width: 600px;
+            }
+
+            .controls-section {
+                gap: 2rem;
+                padding: 2.5rem 1.5rem;
+            }
+
+            .btn-control {
+                width: 260px;
+                font-size: 1.05rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2rem;
+            }
+
+            .nivel-status {
+                font-size: 1.5rem;
+            }
+
+            .reservoir {
+                width: 90vw;
+                max-width: 500px;
+                height: 250px;
+            }
+
+            .level-bar {
+                width: 40px;
+                height: 250px;
+            }
+
+            .reservoir-container {
+                gap: 1.5rem;
+            }
+
+            .controls-section {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+                padding: 2rem 1rem;
+            }
+
+            .btn-control {
+                width: 90vw;
+                max-width: 350px;
+                height: 65px;
+            }
+
+            .btn-img {
+                width: 32px;
+                height: 32px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.6rem;
+            }
+
+            .nivel-status {
+                font-size: 1.3rem;
+            }
+
+            .game-container {
+                padding: 1.5rem 1rem;
+                gap: 1rem;
+            }
+
+            .reservoir {
+                width: 90vw;
+                max-width: 320px;
+                height: 200px;
+            }
+
+            .level-bar {
+                width: 36px;
+                height: 200px;
+            }
+
+            .level-percentage {
+                font-size: 0.9rem;
+            }
+
+            .reservoir-container {
+                gap: 1rem;
+            }
+
+            .controls-section {
+                padding: 1.5rem 1rem;
+                gap: 1rem;
+            }
+
+            .btn-control {
+                width: 90vw;
+                max-width: 300px;
+                height: 60px;
+                font-size: 1rem;
+                gap: 0.7rem;
+            }
+
+            .btn-img {
+                width: 28px;
+                height: 28px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .nivel-status {
+                font-size: 1.1rem;
+            }
+
+            .reservoir {
+                height: 180px;
+            }
+
+            .level-bar {
+                width: 32px;
+                height: 180px;
+            }
+
+            .btn-control {
+                height: 55px;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a href="index.html" class="logo">Aqua Land</a>
+    </header>
+
+    <!-- Container do jogo -->
+    <div class="game-container">
+        <!-- Status do nível -->
+        <div class="nivel-status">
+            <span class="label">Nível: </span>
+            <span class="critico" id="nivel-texto">Crítico</span>
+        </div>
+
+        <!-- Reservatório e barra de nível -->
+        <div  class="reservoir-container">
+            <!-- Barra de nível lateral -->
+            <div class="level-bar">
+                <div class="heat-gradient" aria-hidden="true"></div>
+                <div class="level-percentage" id="level-percentage">20%</div>
+            </div>
+
+            <!-- Reservatório -->
+            <div class="reservoir">
+                <div class="water" id="water-level"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controles -->
+    <section style="margin-top: 40px;" class="controls-section">
+        <button class="btn-control btn-chover" id="btn-chover">
+            <img class="btn-img" src="assets/chover.png" alt="Chover">
+            Chover
+        </button>
+        <button class="btn-control btn-evaporar" id="btn-evaporar">
+            <img class="btn-img" src="assets/sol.png" alt="Evaporar">
+            Evaporar
+        </button>
+        <button class="btn-control btn-reiniciar" id="btn-reiniciar">
+            <img class="btn-img" src="assets/reset.png" alt="Reiniciar">
+            Reiniciar
+        </button>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        © 2025 Aqua Land. Todos os direitos reservados.
+    </footer>
+
+    <script>
+        let waterLevel = 20; // Nível inicial: 20%
+
+        const waterElement = document.getElementById('water-level');
+        const heatGradient = document.querySelector('.heat-gradient');
+        const levelPercentage = document.getElementById('level-percentage');
+        const nivelTexto = document.getElementById('nivel-texto');
+
+        function updateWaterLevel() {
+            waterElement.style.height = waterLevel + '%';
+            heatGradient.style.height = waterLevel + '%';
+            levelPercentage.textContent = waterLevel + '%';
+
+            // Atualizar cor da barra e texto conforme o nível
+            if (waterLevel < 30) {
+                // Crítico - Vermelho
+                heatGradient.style.background = `linear-gradient(to top,
+                    #E76F51 0%,
+                    #F4A584 40%,
+                    rgba(249, 220, 196, 0.6) 70%,
+                    rgba(245, 245, 245, 0) 100%
+                )`;
+                levelPercentage.style.color = '#E76F51';
+                nivelTexto.textContent = 'Crítico';
+                nivelTexto.style.color = '#f2745e';
+            } else if (waterLevel < 60) {
+                // Moderado - Amarelo
+                heatGradient.style.background = `linear-gradient(to top,
+                    #F4A261 0%,
+                    #FFD97D 40%,
+                    rgba(255, 235, 186, 0.6) 70%,
+                    rgba(245, 245, 245, 0) 100%
+                )`;
+                levelPercentage.style.color = '#F4A261';
+                nivelTexto.textContent = 'Moderado';
+                nivelTexto.style.color = '#ffd93d';
+            } else {
+                // Bom - Verde
+                heatGradient.style.background = `linear-gradient(to top,
+                    #6BCF7F 0%,
+                    #A8E6B0 40%,
+                    rgba(200, 240, 210, 0.6) 70%,
+                    rgba(245, 245, 245, 0) 100%
+                )`;
+                levelPercentage.style.color = '#6BCF7F';
+                nivelTexto.textContent = 'Bom';
+                nivelTexto.style.color = '#6bcf7f';
+            }
+        }
+
+        // Botão Chover - adiciona água
+        document.getElementById('btn-chover').addEventListener('click', () => {
+            if (waterLevel < 100) {
+                waterLevel = Math.min(100, waterLevel + 10);
+                updateWaterLevel();
+            }
+        });
+
+        // Botão Evaporar - remove água
+        document.getElementById('btn-evaporar').addEventListener('click', () => {
+            if (waterLevel > 0) {
+                waterLevel = Math.max(0, waterLevel - 10);
+                updateWaterLevel();
+            }
+        });
+
+        // Botão Reiniciar - volta ao nível inicial
+        document.getElementById('btn-reiniciar').addEventListener('click', () => {
+            waterLevel = 20;
+            updateWaterLevel();
+        });
+
+        // Inicializar
+        updateWaterLevel();
+    </script>
+</body>
+</html>

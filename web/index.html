@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aqua Land</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Seção superior com ondas */
+        .hero {
+            position: relative;
+            height: 66vh;
+            min-height: 400px;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        /* Ondas do PNG */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/ondas.png');
+            background-size: 100% 100%;
+            background-position: center top;
+            background-repeat: no-repeat;
+            z-index: 1;
+        }
+
+        /* Ondas amarelas CSS */
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background-image: url('assets/ondas.png');
+            background-size: 100% 100%;
+            background-position: top center;
+            background-repeat: no-repeat;
+            z-index: 1;
+        }
+
+        .hero h1,
+        .hero .btn-iniciar {
+            position: relative;
+            z-index: 3;
+        }
+
+        .hero h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            color: #0a3d4a;
+            line-height: 1;
+            margin-bottom: 2rem;
+        }
+
+        .btn-iniciar {
+            background: #1d8fb5;
+            color: white;
+            padding: 1rem 2.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .btn-iniciar:hover {
+            background: #1679a0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Faixa escura com mensagem */
+        .message-section {
+            background: #023e52;
+            padding: 3rem 2rem;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+
+        .message-section p {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Footer amarelo */
+        footer {
+            background: #e6c57a;
+            padding: 0.8rem 1rem;
+            text-align: center;
+            color: #90E0EF;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: auto;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+
+            .btn-iniciar {
+                font-size: 1.1rem;
+                padding: 0.9rem 2rem;
+            }
+
+            .message-section p {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .message-section p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Seção Hero com ondas -->
+    <section class="hero">
+        <h1>Aqua<br>Land</h1>
+        <a href="in-game.html" class="btn-iniciar">Iniciar Simulação</a>
+    </section>
+
+    <!-- Faixa com mensagem -->
+    <section class="message-section">
+        <p>O reservatório de Irecê está em nível crítico, que tal fazer chover?</p>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        © 2025 Aqua Land. Todos os direitos reservados.
+    </footer>
+</body>
+</html>
