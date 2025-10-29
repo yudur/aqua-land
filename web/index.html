@@ -1,23 +1,19 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Aqua Land</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Poppins', sans-serif;
             overflow-x: hidden;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            background: linear-gradient(#f7fbfd,#f1f8fa);
         }
 
         /* Seção superior com ondas */
@@ -32,136 +28,179 @@
             justify-content: center;
             text-align: center;
             overflow: hidden;
+            padding: 2rem;
         }
 
-        /* Ondas do PNG */
         .hero::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background-image: url('assets/ondas.png');
             background-size: 100% 100%;
             background-position: center top;
             background-repeat: no-repeat;
-            z-index: 1;
-        }
-
-        /* Ondas amarelas CSS */
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 60%;
-            background-image: url('assets/ondas.png');
-            background-size: 100% 100%;
-            background-position: top center;
-            background-repeat: no-repeat;
+            opacity: .12;
             z-index: 1;
         }
 
         .hero h1,
-        .hero .btn-iniciar {
+        .hero .controls {
             position: relative;
             z-index: 3;
         }
 
         .hero h1 {
-            font-size: 5rem;
+            font-size: 4rem;
             font-weight: 800;
             color: #0a3d4a;
             line-height: 1;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
         }
 
-        .btn-iniciar {
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .btn {
             background: #1d8fb5;
             color: white;
-            padding: 1rem 2.5rem;
-            font-size: 1.25rem;
+            padding: 0.85rem 1.6rem;
+            font-size: 1rem;
             font-weight: 700;
             border: none;
             border-radius: 10px;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+            transition: all 0.24s ease;
         }
 
-        .btn-iniciar:hover {
-            background: #1679a0;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        .btn:hover { transform: translateY(-3px); }
+        .btn:disabled { opacity: 0.5; transform: none; cursor: not-allowed; }
+
+        .btn.secondary { background: #f29f05; color: #01293a; }
+        .btn.ghost { background: transparent; color: #01293a; border: 2px solid #01293a; }
+
+        /* Indicadores do reservatório */
+        .status {
+            margin-top: 1.5rem;
+            width: min(900px, 92%);
+            text-align: left;
         }
 
-        /* Faixa escura com mensagem */
+        .status .level-row {
+            display:flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: .6rem;
+        }
+        .status .level-row .label { color: #014451; font-weight:700; }
+        .status .level-row .value { color:#023e52; font-weight:800; font-size:1.25rem; }
+
+        .progress-wrap {
+            width: 100%;
+            height: 28px;
+            background: linear-gradient(90deg,#dfeff4,#f7fbfc);
+            border-radius: 16px;
+            padding: 3px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
+        }
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg,#4fd1e0,#1679a0);
+            border-radius: 12px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color: white;
+            font-weight:700;
+        }
+
+        /* Message + attempts + log */
         .message-section {
             background: #023e52;
-            padding: 3rem 2rem;
+            padding: 1.8rem 2rem;
             text-align: center;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 200px;
-        }
-
-        .message-section p {
             color: white;
-            font-size: 1.5rem;
-            font-weight: 700;
-            max-width: 900px;
-            margin: 0 auto;
         }
 
-        /* Footer amarelo */
+        .message-section p { font-size: 1.2rem; font-weight: 700; max-width: 900px; margin: 0 auto; }
+
+        .info {
+            width: min(1000px, 95%);
+            margin: 1rem auto;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 6px 18px rgba(2,62,82,0.06);
+            min-width: 260px;
+            flex: 1 1 300px;
+        }
+
+        .attempts { font-size: 1.05rem; font-weight:800; color:#023e52; }
+        .hint { font-size: .9rem; color:#556b6f; margin-top:.4rem; }
+
+        .log {
+            max-height: 220px;
+            overflow: auto;
+            margin-top: .6rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+            font-size: .95rem;
+            color:#123;
+        }
+
         footer {
             background: #e6c57a;
             padding: 0.8rem 1rem;
             text-align: center;
-            color: #90E0EF;
-            font-size: 0.85rem;
+            color: #01293a;
+            font-size: 0.95rem;
             font-weight: 600;
             margin-top: auto;
         }
 
-        /* Responsivo */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 3.5rem;
-            }
-
-            .btn-iniciar {
-                font-size: 1.1rem;
-                padding: 0.9rem 2rem;
-            }
-
-            .message-section p {
-                font-size: 1.2rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .message-section p {
-                font-size: 1rem;
-            }
+            .hero h1 { font-size: 3rem; }
+            .btn { padding: .7rem 1rem; font-size:.95rem; }
         }
     </style>
 </head>
 <body>
-    <!-- Seção Hero com ondas -->
+    <!-- Seção Hero com controles -->
     <section class="hero">
         <h1>Aqua<br>Land</h1>
-        <a href="in-game.html" class="btn-iniciar">Iniciar Simulação</a>
+
+        <div class="controls">
+            <button id="btnRain" class="btn">Chover</button>
+            <button id="btnEvaporate" class="btn secondary">Evaporar</button>
+            <button id="btnReset" class="btn ghost">Reiniciar</button>
+        </div>
+
+        <div class="status" aria-live="polite">
+            <div class="level-row">
+                <div class="label">Nível do reservatório</div>
+                <div class="value" id="levelValue">0</div>
+            </div>
+            <div class="progress-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="1000" aria-valuenow="0">
+                <div id="progressBar" class="progress">0%</div>
+            </div>
+        </div>
     </section>
 
     <!-- Faixa com mensagem -->
@@ -169,9 +208,106 @@
         <p>O reservatório de Irecê está em nível crítico, que tal fazer chover?</p>
     </section>
 
+    <!-- Info: tentativas e log -->
+    <div class="info">
+        <div class="card">
+            <div class="attempts">Tentativas restantes: <span id="attemptsLeft">0</span></div>
+            <div class="hint">Ao carregar ou reiniciar, as tentativas serão sorteadas aleatoriamente (3 a 8). Cada ação consome 1 tentativa.</div>
+        </div>
+
+        <div class="card">
+            <div style="font-weight:800; margin-bottom:.4rem;">Registro de ações</div>
+            <div class="log" id="actionLog" aria-live="polite"></div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer>
         © 2025 Aqua Land. Todos os direitos reservados.
     </footer>
+
+    <script>
+        (function(){
+            // Configurações
+            const MAX_LEVEL = 1000;            // máximo do reservatório (unidade arbitrária)
+            const MIN_ATTEMPTS = 3;
+            const MAX_ATTEMPTS = 8;            // você pediu máximo 8
+            const MIN_CHANGE = 10;             // mínimo que chove/evapora
+            const MAX_CHANGE = 100;            // máximo que chove/evapora
+
+            // Elementos
+            const btnRain = document.getElementById('btnRain');
+            const btnEvap = document.getElementById('btnEvaporate');
+            const btnReset = document.getElementById('btnReset');
+            const levelValueEl = document.getElementById('levelValue');
+            const progressBarEl = document.getElementById('progressBar');
+            const attemptsEl = document.getElementById('attemptsLeft');
+            const logEl = document.getElementById('actionLog');
+
+            // Estado
+            let level = 0;
+            let attemptsLeft = 0;
+
+            function randInt(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+            function updateUI() {
+                levelValueEl.textContent = level;
+                const percent = Math.round((level / MAX_LEVEL) * 100);
+                progressBarEl.style.width = percent + '%';
+                progressBarEl.textContent = percent + '%';
+                progressBarEl.parentElement.setAttribute('aria-valuenow', level);
+                attemptsEl.textContent = attemptsLeft;
+                btnRain.disabled = attemptsLeft <= 0;
+                btnEvap.disabled = attemptsLeft <= 0;
+            }
+
+            function addLog(text, highlight=false) {
+                const time = new Date().toLocaleTimeString();
+                const row = document.createElement('div');
+                row.innerHTML = `<strong>[${time}]</strong> ${text}`;
+                if (highlight) row.style.color = '#0a3d4a';
+                logEl.prepend(row); // mostrar mais recente em cima
+            }
+
+            function applyChange(type) {
+                if (attemptsLeft <= 0) return;
+                const change = randInt(MIN_CHANGE, MAX_CHANGE);
+                if (type === 'rain') {
+                    level = clamp(level + change, 0, MAX_LEVEL);
+                    addLog(`Choveu +${change} — nível agora ${level}. Tentativas restantes: ${attemptsLeft - 1}`, true);
+                } else {
+                    level = clamp(level - change, 0, MAX_LEVEL);
+                    addLog(`Evaporou -${change} — nível agora ${level}. Tentativas restantes: ${attemptsLeft - 1}`, true);
+                }
+                attemptsLeft--;
+                updateUI();
+                if (attemptsLeft <= 0) {
+                    addLog('As tentativas acabaram. Clique em Reiniciar para sortear novos valores.', false);
+                }
+            }
+
+            function resetAll() {
+                // Gera novo nível inicial e novas tentativas
+                attemptsLeft = randInt(MIN_ATTEMPTS, MAX_ATTEMPTS);
+                // nível inicial aleatório entre 100 e MAX_LEVEL-100 para visual
+                level = randInt(100, Math.max(200, MAX_LEVEL - 100));
+                logEl.innerHTML = ''; // limpa log
+                addLog(`Reiniciado: nível inicial ${level}. Tentativas sorteadas: ${attemptsLeft}`, true);
+                updateUI();
+            }
+
+            // Eventos
+            btnRain.addEventListener('click', () => applyChange('rain'));
+            btnEvap.addEventListener('click', () => applyChange('evap'));
+            btnReset.addEventListener('click', () => resetAll());
+
+            // Inicializa ao carregar
+            resetAll();
+        })();
+    </script>
 </body>
 </html>
